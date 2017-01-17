@@ -6,10 +6,24 @@
         </encoder>
     </appender>
 
-    <appender name="LOG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="MAIN_LOG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!-- daily rollover -->
             <fileNamePattern>logs/application-debug.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <!-- keep 30 days' worth of history capped at 3GB total size -->
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date %level [%-4relative] [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="REST_CLIENTS_LOG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>logs/rest-clients-debug.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxFileSize>100MB</maxFileSize>
             <!-- keep 30 days' worth of history capped at 3GB total size -->
             <maxHistory>30</maxHistory>
@@ -27,12 +41,12 @@
         <protocol>TCP</protocol>
         <includeSource>true</includeSource>
         <includeMDC>true</includeMDC>
-        <queueSize>512</queueSize>
+        <queueSize>1024</queueSize>
         <connectTimeout>1000</connectTimeout>
         <reconnectDelay>500</reconnectDelay>
         <additionalFields>cow=moo,cat=meow</additionalFields>
         <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%.-25m</pattern>
+            <pattern>%.-256m</pattern>
         </layout>
     </appender>
 
@@ -57,10 +71,15 @@
     </root>
 
     <logger name="com.example">
-        <level value="DEBUG"/>
-        <appender-ref ref="LOG_FILE" />
+        <level value="info"/>
+        <appender-ref ref="MAIN_LOG_FILE" />
         <appender-ref ref="gelf tcp" />
         <!--<appender-ref ref="gelf udp" />-->
+    </logger>
+
+    <logger name="com.example.interceptor">
+        <level value="debug"/>
+        <appender-ref ref="REST_CLIENTS_LOG_FILE" />
     </logger>
 
 </configuration>

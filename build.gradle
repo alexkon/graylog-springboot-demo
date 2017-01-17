@@ -27,7 +27,8 @@ repositories {
 
 
 dependencies {
-    compile('org.springframework.boot:spring-boot-starter')
+//    compile('org.springframework.boot:spring-boot-starter')
+	compile('org.springframework.boot:spring-boot-starter-web')
     compile('de.appelgriepsch.logback:logback-gelf-appender:1.2.3')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
