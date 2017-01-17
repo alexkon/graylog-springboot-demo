@@ -36,7 +36,7 @@ public class TaskSheduller implements SchedulingConfigurer {
             String result = restTemplate.getForObject("http://localhost:8080/service1/status", String.class);
             logger.info("Heart Beat Service1 result: {}", result);
         } catch (Exception exception) {
-            logger.error("Service1 connection failed: {}", exception.getMessage());
+            logger.error("Heart Beat Service1 result: {}", exception.getMessage());
         }
         logger.debug("Finished heartBeatService1 task");
     }
@@ -48,7 +48,7 @@ public class TaskSheduller implements SchedulingConfigurer {
             String result = restTemplate.getForObject("http://localhost:8080/service2/status", String.class);
             logger.info("Heart Beat Service2 result: {}", result);
         } catch (Exception exception) {
-            logger.error("Service2 connection failed: {}", exception.getMessage());
+            logger.error("Heart Beat Service2 result: {}", exception.getMessage());
         }
         logger.debug("Finished heartBeatService2 task");
     }

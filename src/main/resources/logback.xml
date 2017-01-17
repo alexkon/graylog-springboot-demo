@@ -9,7 +9,7 @@
     <appender name="MAIN_LOG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!-- daily rollover -->
-            <fileNamePattern>logs/application-debug.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>logs/application-main.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxFileSize>100MB</maxFileSize>
             <!-- keep 30 days' worth of history capped at 3GB total size -->
             <maxHistory>30</maxHistory>
@@ -24,6 +24,20 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!-- daily rollover -->
             <fileNamePattern>logs/rest-clients-debug.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <!-- keep 30 days' worth of history capped at 3GB total size -->
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date %level [%-4relative] [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="INCOMING_REQUESTS_LOG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>logs/incoming-requests-debug.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxFileSize>100MB</maxFileSize>
             <!-- keep 30 days' worth of history capped at 3GB total size -->
             <maxHistory>30</maxHistory>
@@ -71,15 +85,19 @@
     </root>
 
     <logger name="com.example">
-        <level value="info"/>
         <appender-ref ref="MAIN_LOG_FILE" />
         <appender-ref ref="gelf tcp" />
         <!--<appender-ref ref="gelf udp" />-->
     </logger>
 
-    <logger name="com.example.interceptor">
-        <level value="debug"/>
+    <logger name="com.example.interceptor.RestTemplateInterceptor" additivity="false">
+        <level value="DEBUG"/>
         <appender-ref ref="REST_CLIENTS_LOG_FILE" />
+    </logger>
+
+    <logger name="com.example.interceptor.ControllerExecuteTimeInterceptor" additivity="false" >
+        <level value="DEBUG"/>
+        <appender-ref ref="INCOMING_REQUESTS_LOG_FILE" />
     </logger>
 
 </configuration>
