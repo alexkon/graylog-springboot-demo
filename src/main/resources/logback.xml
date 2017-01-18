@@ -49,8 +49,10 @@
     </appender>
 
     <appender name="gelf tcp" class="de.appelgriepsch.logback.GelfAppender">
-        <server>192.168.99.100</server>
-        <port>12204</port>
+        <server>127.0.0.1</server>
+        <port>12201</port>
+        <!--<server>192.168.99.100</server>-->
+        <!--<port>12204</port>-->
         <hostName>macbook</hostName>
         <protocol>TCP</protocol>
         <includeSource>true</includeSource>
@@ -93,6 +95,7 @@
     <logger name="com.example.interceptor.RestTemplateInterceptor" additivity="false">
         <level value="DEBUG"/>
         <appender-ref ref="REST_CLIENTS_LOG_FILE" />
+        <appender-ref ref="gelf tcp" />
     </logger>
 
     <logger name="com.example.interceptor.ControllerExecuteTimeInterceptor" additivity="false" >

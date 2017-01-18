@@ -41,7 +41,7 @@ public class TaskSheduller implements SchedulingConfigurer {
         logger.debug("Finished heartBeatService1 task");
     }
 
-//    @Scheduled(initialDelay=1000, fixedDelay=5*1000) // каждые 5 сек
+    @Scheduled(initialDelay=1000, fixedDelay=5*1000) // каждые 5 сек
     public void heartBeatService2() {
         logger.debug("Started heartBeatService2 task");
         try {
