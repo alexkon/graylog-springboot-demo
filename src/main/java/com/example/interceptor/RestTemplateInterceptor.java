@@ -42,7 +42,7 @@ public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
         return response;
     }
 
-    private void traceRequest(HttpRequest request, byte[] body, Long counter) throws IOException {
+    private void traceRequest(HttpRequest request, byte[] body, long counter) throws IOException {
 
         ObjectNode req = nodeFactory.objectNode();
         req.put("request-name", "client-outgoing-request");
@@ -55,7 +55,7 @@ public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
         logger.debug(jsonToPrettyString(req));
     }
 
-    private void traceResponse(ClientHttpResponse response, Long counter, long execTime) throws IOException {
+    private void traceResponse(ClientHttpResponse response, long counter, long execTime) throws IOException {
 
         String body = new BufferedReader(new InputStreamReader(response.getBody(), "UTF-8"))
                 .lines()

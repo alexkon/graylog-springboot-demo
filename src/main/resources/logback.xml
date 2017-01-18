@@ -94,13 +94,13 @@
 
     <logger name="com.example.interceptor.RestTemplateInterceptor" additivity="false">
         <level value="DEBUG"/>
-        <appender-ref ref="STDOUT" />
         <appender-ref ref="GRAYLOG_TCP" />
         <appender-ref ref="REST_CLIENTS_LOG_FILE" />
     </logger>
 
     <logger name="com.example.interceptor.ControllerExecuteTimeInterceptor" additivity="false" >
         <level value="DEBUG"/>
+        <appender-ref ref="GRAYLOG_TCP" />
         <appender-ref ref="INCOMING_REQUESTS_LOG_FILE" />
     </logger>
 

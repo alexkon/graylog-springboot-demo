@@ -1,5 +1,7 @@
 package com.example.interceptor;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
@@ -14,11 +16,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static com.example.util.JsonUtil.jsonToPrettyString;
+import static com.example.util.JsonUtil.mapToJsonNode;
+
 public class ControllerExecuteTimeInterceptor extends HandlerInterceptorAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(ControllerExecuteTimeInterceptor.class);
 
     private AtomicLong counter = new AtomicLong();
+
+    private JsonNodeFactory nodeFactory = JsonNodeFactory.instance;
 
     //before the actual handler will be executed
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -51,19 +58,26 @@ public class ControllerExecuteTimeInterceptor extends HandlerInterceptorAdapter 
 
     private void traceRequest(HttpServletRequest request, Long counter) throws IOException {
 
-        logger.debug(counter + " - ===========================request begin================================================");
-        logger.debug(counter + " - URI         : {}", request.getRequestURI());
-        logger.debug(counter + " - Method      : {}", request.getMethod());
-        logger.debug(counter + " - Headers     : {}", getRequestHeadersInfo(request));
-        logger.debug(counter + " -==========================request end================================================");
+        ObjectNode req = nodeFactory.objectNode();
+        req.put("request-name", "server-incoming-request");
+        req.put("request-id", counter);
+        req.put("uri", request.getRequestURI());
+        req.put("method", request.getMethod());
+        req.set("headers", mapToJsonNode(getRequestHeadersInfo(request)));
+
+        logger.debug(jsonToPrettyString(req));
     }
 
-    private void traceResponse(HttpServletResponse response, Long counter, Long executeTime) throws IOException {
-        logger.debug(counter + " -============================response begin==========================================");
-        logger.debug(counter + " - Status code    : {}", response.getStatus());
-        logger.debug(counter + " - Headers        : {}", getResponseHeadersInfo(response));
-        logger.debug(counter + " - Execution time : {} ms", executeTime);
-        logger.debug(counter + " -=======================response end=================================================\n\n");
+    private void traceResponse(HttpServletResponse response, Long counter, long executeTime) throws IOException {
+
+        ObjectNode resp = nodeFactory.objectNode();
+        resp.put("request-name", "server-outgoing-response");
+        resp.put("request-id", counter);
+        resp.put("status-code", response.getStatus());
+        resp.set("headers", mapToJsonNode(getResponseHeadersInfo(response)));
+        resp.put("execution-time-ms", executeTime);
+
+        logger.debug(jsonToPrettyString(resp));
     }
 
     private static Map<String, String> getRequestHeadersInfo(HttpServletRequest request) {
