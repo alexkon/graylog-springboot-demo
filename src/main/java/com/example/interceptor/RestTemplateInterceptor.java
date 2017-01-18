@@ -16,7 +16,8 @@ import java.io.InputStreamReader;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
-import static com.example.util.Util.jsonToPrettyString;
+import static com.example.util.JsonUtil.jsonToPrettyString;
+import static com.example.util.JsonUtil.mapToJsonNode;
 
 @PropertySource("classpath:application.properties")
 
@@ -43,16 +44,15 @@ public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
 
     private void traceRequest(HttpRequest request, byte[] body, Long counter) throws IOException {
 
-        ObjectNode reqWrapper = nodeFactory.objectNode();
         ObjectNode req = nodeFactory.objectNode();
-        req.put("request_id", counter);
+        req.put("request-name", "client-outgoing-request");
+        req.put("request-id", counter);
         req.put("uri", request.getURI().toString());
         req.put("method", request.getMethod().toString());
-        req.put("headers", request.getHeaders().toString());
+        req.set("headers", mapToJsonNode(request.getHeaders().toSingleValueMap()));
         req.put("request-body", new String(body, "UTF-8"));
-        reqWrapper.set("client-outgoing-request", req);
 
-        logger.debug(jsonToPrettyString(reqWrapper));
+        logger.debug(jsonToPrettyString(req));
     }
 
     private void traceResponse(ClientHttpResponse response, Long counter, long execTime) throws IOException {
@@ -61,17 +61,16 @@ public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
                 .lines()
                 .collect(Collectors.joining("\n"));
 
-        ObjectNode respWrapper = nodeFactory.objectNode();
         ObjectNode resp = nodeFactory.objectNode();
-        resp.put("request_id", counter);
+        resp.put("response-name", "client-incoming-response");
+        resp.put("request-id", counter);
         resp.put("status-code", response.getStatusCode().toString());
         resp.put("status-text", response.getStatusText());
-        resp.put("headers", response.getHeaders().toString());
+        resp.put("headers", mapToJsonNode(response.getHeaders().toSingleValueMap()));
         resp.put("response-body", body);
         resp.put("execution-time-ms", execTime);
-        respWrapper.set("client-incoming-response", resp);
 
-        logger.debug(jsonToPrettyString(respWrapper));
+        logger.debug(jsonToPrettyString(resp));
     }
 
 }
