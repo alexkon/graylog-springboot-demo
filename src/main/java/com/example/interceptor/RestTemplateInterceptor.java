@@ -37,7 +37,7 @@ public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
         ClientHttpResponse response = execution.execute(request, body);
         long end = System.currentTimeMillis();
 
-        traceResponse(response, requestId, (end - start));
+        traceResponse(response, requestId, request.getURI().toString(), (end - start));
 
         return response;
     }
@@ -55,7 +55,7 @@ public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
         logger.debug(jsonToPrettyString(req));
     }
 
-    private void traceResponse(ClientHttpResponse response, long counter, long execTime) throws IOException {
+    private void traceResponse(ClientHttpResponse response, long counter,  String uri, long execTime) throws IOException {
 
         String body = new BufferedReader(new InputStreamReader(response.getBody(), "UTF-8"))
                 .lines()
@@ -63,10 +63,11 @@ public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
 
         ObjectNode resp = nodeFactory.objectNode();
         resp.put("response-name", "client-incoming-response");
+        resp.put("uri", uri);
         resp.put("request-id", counter);
         resp.put("status-code", response.getStatusCode().toString());
         resp.put("status-text", response.getStatusText());
-        resp.put("headers", mapToJsonNode(response.getHeaders().toSingleValueMap()));
+        resp.set("headers", mapToJsonNode(response.getHeaders().toSingleValueMap()));
         resp.put("response-body", body);
         resp.put("execution-time-ms", execTime);
 

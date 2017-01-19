@@ -50,7 +50,7 @@
 
     <appender name="GRAYLOG_TCP" class="de.appelgriepsch.logback.GelfAppender">
         <server>127.0.0.1</server>
-        <port>12201</port>
+        <port>12205</port>
         <!--<server>192.168.99.100</server>-->
         <!--<port>12204</port>-->
         <hostName>macbook</hostName>
