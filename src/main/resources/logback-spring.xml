@@ -52,8 +52,6 @@
     <appender name="GRAYLOG_TCP" class="de.appelgriepsch.logback.GelfAppender">
         <server>127.0.0.1</server>
         <port>12205</port>
-        <!--<server>192.168.99.100</server>-->
-        <!--<port>12204</port>-->
         <hostName>macbook</hostName>
         <protocol>TCP</protocol>
         <includeSource>true</includeSource>
@@ -63,7 +61,7 @@
         <reconnectDelay>500</reconnectDelay>
         <additionalFields>cow=moo,cat=meow</additionalFields>
         <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%.-4096m</pattern>
+            <pattern>%message</pattern>
         </layout>
     </appender>
 
@@ -99,7 +97,7 @@
         <appender-ref ref="REST_CLIENTS_LOG_FILE" />
     </logger>
 
-    <logger name="com.example.interceptor.ControllerExecuteTimeInterceptor" additivity="false" >
+    <logger name="com.example.interceptor.RestControllerInterceptor" additivity="false">
         <level value="DEBUG"/>
         <appender-ref ref="GRAYLOG_TCP" />
         <appender-ref ref="INCOMING_REQUESTS_LOG_FILE" />
