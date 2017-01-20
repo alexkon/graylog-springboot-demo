@@ -4,11 +4,12 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,12 +20,14 @@ import java.util.stream.Collectors;
 import static com.example.util.JsonUtil.jsonToPrettyString;
 import static com.example.util.JsonUtil.mapToJsonNode;
 
-@PropertySource("classpath:application.properties")
-
+@Component
 public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
     private static final Logger logger = LoggerFactory.getLogger(RestTemplateInterceptor.class);
     private AtomicLong counter = new AtomicLong();
     private JsonNodeFactory nodeFactory = JsonNodeFactory.instance;
+
+    @Value("${json.log.pretty}")
+    private boolean prettyJson;
 
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
@@ -52,7 +55,7 @@ public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
         req.set("headers", mapToJsonNode(request.getHeaders().toSingleValueMap()));
         req.put("request-body", new String(body, "UTF-8"));
 
-        logger.debug(jsonToPrettyString(req));
+        logger.debug(prettyJson ? jsonToPrettyString(req): req.toString());
     }
 
     private void traceResponse(ClientHttpResponse response, long counter,  String uri, long execTime) throws IOException {
@@ -71,7 +74,7 @@ public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
         resp.put("response-body", body);
         resp.put("execution-time-ms", execTime);
 
-        logger.debug(jsonToPrettyString(resp));
+        logger.debug(prettyJson ? jsonToPrettyString(resp): resp.toString());
     }
 
 }

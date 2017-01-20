@@ -1,7 +1,8 @@
 package com.example;
 
-import com.example.interceptor.ControllerExecuteTimeInterceptor;
+import com.example.interceptor.RestControllerInterceptor;
 import com.example.interceptor.RestTemplateInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.BufferingClientHttpRequestFactory;
@@ -17,6 +18,15 @@ import java.util.List;
 @Configuration
 public class ApplicationConfig extends WebMvcConfigurerAdapter {
 
+    private RestControllerInterceptor restControllerInterceptor;
+    private RestTemplateInterceptor restTemplateInterceptor;
+
+    @Autowired
+    public ApplicationConfig(RestControllerInterceptor restControllerInterceptor, RestTemplateInterceptor restTemplateInterceptor) {
+        this.restControllerInterceptor = restControllerInterceptor;
+        this.restTemplateInterceptor = restTemplateInterceptor;
+    }
+
     @Bean
     RestTemplate restTemplate() {
         // create factory with timeouts
@@ -26,7 +36,7 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter {
 
         // create interceptors
         List<ClientHttpRequestInterceptor> interceptors = new ArrayList<ClientHttpRequestInterceptor>();
-        interceptors.add(new RestTemplateInterceptor());
+        interceptors.add(restTemplateInterceptor);
 
         // configure rest template
         RestTemplate restTemplate = new RestTemplate(new BufferingClientHttpRequestFactory(requestFactory));
@@ -34,13 +44,8 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter {
         return restTemplate;
     }
 
-    @Bean
-    public ControllerExecuteTimeInterceptor getControllerInterceptor() {
-        return new ControllerExecuteTimeInterceptor();
-    }
-
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(getControllerInterceptor()).addPathPatterns("/**");
+        registry.addInterceptor(restControllerInterceptor).addPathPatterns("/**");
     }
 }

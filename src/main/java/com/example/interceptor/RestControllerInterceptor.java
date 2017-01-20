@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -19,13 +21,17 @@ import java.util.concurrent.atomic.AtomicLong;
 import static com.example.util.JsonUtil.jsonToPrettyString;
 import static com.example.util.JsonUtil.mapToJsonNode;
 
-public class ControllerExecuteTimeInterceptor extends HandlerInterceptorAdapter {
+@Component
+public class RestControllerInterceptor extends HandlerInterceptorAdapter {
 
-    private static final Logger logger = LoggerFactory.getLogger(ControllerExecuteTimeInterceptor.class);
+    private static final Logger logger = LoggerFactory.getLogger(RestControllerInterceptor.class);
 
     private AtomicLong counter = new AtomicLong();
 
     private JsonNodeFactory nodeFactory = JsonNodeFactory.instance;
+
+    @Value("${json.log.pretty}")
+    private boolean prettyJson;
 
     //before the actual handler will be executed
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -65,7 +71,7 @@ public class ControllerExecuteTimeInterceptor extends HandlerInterceptorAdapter 
         req.put("method", request.getMethod());
         req.set("headers", mapToJsonNode(getRequestHeadersInfo(request)));
 
-        logger.debug(jsonToPrettyString(req));
+        logger.debug(prettyJson ? jsonToPrettyString(req): req.toString());
     }
 
     private void traceResponse(HttpServletResponse response, Long counter, long executeTime) throws IOException {
@@ -77,7 +83,7 @@ public class ControllerExecuteTimeInterceptor extends HandlerInterceptorAdapter 
         resp.set("headers", mapToJsonNode(getResponseHeadersInfo(response)));
         resp.put("execution-time-ms", executeTime);
 
-        logger.debug(jsonToPrettyString(resp));
+        logger.debug(prettyJson ? jsonToPrettyString(resp): resp.toString());
     }
 
     private static Map<String, String> getRequestHeadersInfo(HttpServletRequest request) {
