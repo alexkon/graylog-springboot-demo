@@ -25,11 +25,11 @@ public class GraylogDemoApplication {
     @Bean
     CommandLineRunner runner() {
         return (args -> {
-            logger.trace("GraylogDemoApplication: test TRACE message");
-            logger.debug("GraylogDemoApplication: test DEBUG message");
-            logger.info("GraylogDemoApplication: test INFO message");
-            logger.warn("GraylogDemoApplication: test WARN message");
-            logger.error("GraylogDemoApplication: test ERROR message");
+//            logger.trace("GraylogDemoApplication: test TRACE message");
+//            logger.debug("GraylogDemoApplication: test DEBUG message");
+//            logger.info("GraylogDemoApplication: test INFO message");
+//            logger.warn("GraylogDemoApplication: test WARN message");
+//            logger.error("GraylogDemoApplication: test ERROR message");
 //            performanceTest();
         });
     }
