@@ -29,7 +29,7 @@ public class TaskSheduller implements SchedulingConfigurer {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskSheduller.class);
 
-    @Scheduled(initialDelay=1000, fixedDelay=5*1000) // каждые 5 сек
+    @Scheduled(initialDelay=1000, fixedDelay=5*1000) // every 5 sec
     public void heartBeatService1() {
         logger.debug("Started heartBeatService1 task");
         try {
@@ -41,7 +41,7 @@ public class TaskSheduller implements SchedulingConfigurer {
         logger.debug("Finished heartBeatService1 task");
     }
 
-    @Scheduled(initialDelay=3500, fixedDelay=5*1000) // каждые 5 сек
+    @Scheduled(initialDelay=3500, fixedDelay=5*1000) // every 5 sec
     public void heartBeatService2() {
         logger.debug("Started heartBeatService2 task");
         try {
