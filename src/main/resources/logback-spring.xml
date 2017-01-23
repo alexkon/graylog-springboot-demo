@@ -52,7 +52,7 @@
     <appender name="GRAYLOG_TCP" class="de.appelgriepsch.logback.GelfAppender">
         <server>127.0.0.1</server>
         <port>12205</port>
-        <hostName>macbook</hostName>
+        <hostName>demo-app</hostName>
         <protocol>TCP</protocol>
         <includeSource>true</includeSource>
         <includeMDC>true</includeMDC>
@@ -68,7 +68,7 @@
     <appender name="GRAYLOG_UDP" class="de.appelgriepsch.logback.GelfAppender">
         <server>192.168.99.100</server>
         <port>12203</port>
-        <hostName>macbook</hostName>
+        <hostName>demo-app</hostName>
         <protocol>UDP</protocol>
         <includeSource>true</includeSource>
         <includeMDC>true</includeMDC>
