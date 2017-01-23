@@ -13,7 +13,7 @@ public class Service2 {
 
     @RequestMapping("/service2/status")
     public String heartBeat(HttpServletResponse response) {
-        if (random.nextInt(10) % 7 == 0) {
+        if (random.nextInt(10) >= 9) {  // 10% errors
             response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
         }
         return "Service2 is alive";
