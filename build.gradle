@@ -28,6 +28,6 @@ repositories {
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
-    compile('de.appelgriepsch.logback:logback-gelf-appender:1.2.3')
+	compile('com.github.pukkaone:logback-gelf:1.1.10')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }

@@ -49,36 +49,45 @@
         </encoder>
     </appender>
 
-    <appender name="GRAYLOG_TCP" class="de.appelgriepsch.logback.GelfAppender">
-        <server>127.0.0.1</server>
-        <port>12205</port>
-        <hostName>demo-app</hostName>
-        <protocol>TCP</protocol>
-        <includeSource>true</includeSource>
-        <includeMDC>true</includeMDC>
-        <queueSize>1024</queueSize>
-        <connectTimeout>1000</connectTimeout>
-        <reconnectDelay>500</reconnectDelay>
-        <additionalFields>cow=moo,cat=meow</additionalFields>
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%message</pattern>
-        </layout>
+    <appender name="GRAYLOG_TCP" class="com.github.pukkaone.gelf.logback.GelfAppender">
+        <graylogHost>tcp:127.0.0.1</graylogHost>
+        <graylogPort>12201</graylogPort>
+        <originHost>macbook</originHost>
+        <levelIncluded>true</levelIncluded>
+        <locationIncluded>true</locationIncluded>
+        <loggerIncluded>true</loggerIncluded>
+        <markerIncluded>false</markerIncluded>
+        <mdcIncluded>false</mdcIncluded>
+        <threadIncluded>true</threadIncluded>
+        <facility>gelf-java</facility>
+        <additionalField>tcp-test-new=test</additionalField>
+        <additionalField>environment=development</additionalField>
     </appender>
 
-    <appender name="GRAYLOG_UDP" class="de.appelgriepsch.logback.GelfAppender">
-        <server>192.168.99.100</server>
-        <port>12203</port>
-        <hostName>demo-app</hostName>
-        <protocol>UDP</protocol>
-        <includeSource>true</includeSource>
-        <includeMDC>true</includeMDC>
-        <queueSize>512</queueSize>
-        <connectTimeout>1000</connectTimeout>
-        <reconnectDelay>500</reconnectDelay>
-        <additionalFields>cow=moo,cat=meow</additionalFields>
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%.-25m</pattern>
-        </layout>
+    <appender name="GRAYLOG_UDP" class="com.github.pukkaone.gelf.logback.GelfAppender">
+        <graylogHost>udp:127.0.0.1</graylogHost>
+        <graylogPort>12202</graylogPort>
+        <originHost>macbook</originHost>
+        <levelIncluded>true</levelIncluded>
+        <locationIncluded>true</locationIncluded>
+        <loggerIncluded>true</loggerIncluded>
+        <markerIncluded>false</markerIncluded>
+        <mdcIncluded>false</mdcIncluded>
+        <threadIncluded>true</threadIncluded>
+        <facility>gelf-java</facility>
+        <additionalField>tcp-test-new=test</additionalField>
+        <additionalField>environment=development</additionalField>
+    </appender>
+
+    <appender name="GRAYLOG_AMQP" class="com.github.pukkaone.gelf.logback.GelfAppender">
+        <amqpURI>amqp://login:pass@127.0.0.1:5672/%2f</amqpURI>
+        <amqpExchange>log-messages</amqpExchange>
+        <amqpRoutingKey>#</amqpRoutingKey>
+        <amqpMaxRetries>5</amqpMaxRetries>
+        <originHost>mac-book</originHost>
+        <facility>gelf-java</facility>
+        <additionalField>amqp-test-new=test</additionalField>
+        <additionalField>environment=development</additionalField>
     </appender>
 
     <root level="INFO">
@@ -88,6 +97,7 @@
     <logger name="com.example">
         <appender-ref ref="MAIN_LOG_FILE" />
         <appender-ref ref="GRAYLOG_TCP" />
+        <!--<appender-ref ref="GRAYLOG_AMQP" />-->
         <!--<appender-ref ref="GRAYLOG_UDP" />-->
     </logger>
 
